@@ -79,6 +79,14 @@ func Insert(c *gin.Context) {
 		return
 	}
 
+	if err := studentmodel.Validate(&student); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
 	database.DB.Create(&student)
 
 	c.JSON(http.StatusOK, student)
@@ -108,6 +116,14 @@ func Update(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&student); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	if err := studentmodel.Validate(&student); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
