@@ -12,7 +12,7 @@ type Student struct {
 	RG   string `json:"rg" validate:"len=9, regexp=^[0-9]{9}$"`
 }
 
-func Validate(student *Student) error {
+func (student *Student) Validate() error {
 	if err := validator.Validate(student); err != nil {
 		return err
 	}
