@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var MockedStudentId int
+var MockedStudent studentmodel.Student
 
 func SetupTestRoutes() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
@@ -72,7 +75,6 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGetByCpf(t *testing.T) {
-	database.ConnDB()
 	mockStudent()
 
 	r := SetupTestRoutes()
@@ -89,20 +91,91 @@ func TestGetByCpf(t *testing.T) {
 	deleteMockedStudent()
 }
 
-func mockStudent() {
+func TestGetById(t *testing.T) {
+	mockStudent()
+
+	r := SetupTestRoutes()
+	r.GET("/students/:id", studentcontroller.GetById)
+
+	mockedId := strconv.Itoa(int(MockedStudent.ID))
+	req, _ := http.NewRequest("GET", "/students/"+mockedId, nil)
+	response := httptest.NewRecorder()
+
+	r.ServeHTTP(response, req)
+
+	var student studentmodel.Student
+	json.Unmarshal(response.Body.Bytes(), &student)
+
+	assert.Equal(t, MockedStudent.ID, student.ID)
+	assert.Equal(t, MockedStudent.Name, student.Name)
+	assert.Equal(t, MockedStudent.CPF, student.CPF)
+	assert.Equal(t, MockedStudent.RG, student.RG)
+
+	assert.Equal(t, http.StatusOK, response.Code)
+	assert.NotNil(t, response.Body)
+
+	deleteMockedStudent()
+}
+
+func TestDelete(t *testing.T) {
+	mockStudent()
+
+	r := SetupTestRoutes()
+	r.DELETE("/students/:id", studentcontroller.Delete)
+
+	mockedId := strconv.Itoa(int(MockedStudent.ID))
+	req, _ := http.NewRequest("DELETE", "/students/"+mockedId, nil)
+	response := httptest.NewRecorder()
+
+	r.ServeHTTP(response, req)
+
+	assert.Equal(t, http.StatusOK, response.Code)
+}
+
+func TestUpdate(t *testing.T) {
+	mockStudent()
+
+	r := SetupTestRoutes()
+	r.PATCH("/students/:id", studentcontroller.Update)
+
 	student := studentmodel.Student{
+		Name: "Test Updated Student",
+		CPF:  "12345678900",
+		RG:   "123456700",
+	}
+
+	mockedId := strconv.Itoa(int(MockedStudent.ID))
+	jsonParsed, _ := json.Marshal(student)
+
+	req, _ := http.NewRequest("PATCH", "/students/"+mockedId, bytes.NewBuffer(jsonParsed))
+	response := httptest.NewRecorder()
+
+	r.ServeHTTP(response, req)
+
+	var updatedStudent studentmodel.Student
+	json.Unmarshal(response.Body.Bytes(), &updatedStudent)
+
+	assert.Equal(t, student.Name, updatedStudent.Name)
+	assert.Equal(t, student.CPF, updatedStudent.CPF)
+	assert.Equal(t, student.RG, updatedStudent.RG)
+
+	deleteMockedStudent()
+}
+
+func mockStudent() {
+	MockedStudent = studentmodel.Student{
 		Name: "Test Student",
 		CPF:  "12345678901",
 		RG:   "123456789",
 	}
 
-	database.DB.Create(&student)
-
-	MockedStudentId = int(student.ID)
+	database.ConnDB()
+	database.DB.Create(&MockedStudent)
 }
 
 func deleteMockedStudent() {
 	var student studentmodel.Student
 
-	database.DB.Delete(&student, MockedStudentId)
+	database.ConnDB()
+	database.DB.Delete(&student, MockedStudent.ID)
 }
