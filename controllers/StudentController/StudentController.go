@@ -131,6 +131,7 @@ func Update(c *gin.Context) {
 		return
 	}
 
+	student.ID = uint(parsedId)
 	database.DB.Save(&student)
 
 	c.JSON(http.StatusOK, student)
