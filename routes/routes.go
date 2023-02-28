@@ -6,6 +6,7 @@ import (
 )
 
 func HandleRequests() {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.GET("/:nome", studentcontroller.Greet)
