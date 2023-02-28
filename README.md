@@ -17,8 +17,6 @@ A implementação utiliza alguns packages úteis, tais como:
 ```cd gin-rest-api```
 - Iniciar containers de serviços (`postgres` e `pgadmin4`) docker para criação e administração do banco de dados PostgreSQL:
 ```docker compose up -d```
-- Instalar dependências:
-```go mod download```
 
 ## Utilização
 - O projeto pode ser iniciado executando:
