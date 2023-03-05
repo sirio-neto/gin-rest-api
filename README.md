@@ -12,19 +12,29 @@ A implementação utiliza alguns packages úteis, tais como:
 
 ## Configuração
 - Clonar repositório:
-```git clone https://github.com/sirio-neto/gin-rest-api.git```
+```
+git clone https://github.com/sirio-neto/gin-rest-api.git
+```
 - Acessar diretório projeto
-```cd gin-rest-api```
+```
+cd gin-rest-api
+```
 - Criar arquivo `.env` com base em arquivo de exemplo, para configuração de variáveis de ambiente:
-```cp .env_example .env```
+```
+cp .env_example .env
+```
 - Iniciar containers de serviços (`postgres` e `pgadmin4`) docker para criação e administração do banco de dados PostgreSQL:
-```docker compose up -d```
+```
+docker compose up -d
+```
 
 ## Utilização
 - O projeto pode ser iniciado executando:
-```go run main.go```
+```
+go run main.go
+```
 - Após inicialização, a conexão com banco de dados será estabelecida e as migrations de cada model serão executadas através do `gorm`.
-- A API REST ficará acessível em http://localhost:8002, com seguintes endpoints disponíveis:
+- A API REST ficará acessível na porta atribuída à variável de ambiente `API_PORT`, com seguintes endpoints disponíveis:
 	- `GET /:nome`: Retorna uma mensagem de boas-vindas com o nome fornecido.
 	- `GET /students`: Lista todos os alunos cadastrados.
 	- `GET /students/cpf/:cpf`: Retorna o aluno com o CPF informado.
@@ -36,6 +46,10 @@ A implementação utiliza alguns packages úteis, tais como:
 ## Testes
 É possível executar os testes automatizados incluídos no projeto. Para isso:
 - Acessar diretório projeto
-```cd gin-rest-api```
+```
+cd gin-rest-api
+```
 - Executar testes de integração:
-```go test```
+```
+go test
+```
