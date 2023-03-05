@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	studentcontroller "github.com/sirio-neto/gin-rest-api/controllers/StudentController"
 	"github.com/sirio-neto/gin-rest-api/database"
+	config "github.com/sirio-neto/gin-rest-api/environment"
 	studentmodel "github.com/sirio-neto/gin-rest-api/models/StudentModel"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,7 +20,7 @@ import (
 var MockedStudent studentmodel.Student
 
 func SetupTestRoutes() *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	return r
@@ -57,7 +58,6 @@ func TestGreetFail(t *testing.T) {
 }
 
 func TestGetAll(t *testing.T) {
-	database.ConnDB()
 	mockStudent()
 
 	r := SetupTestRoutes()
@@ -169,13 +169,16 @@ func mockStudent() {
 		RG:   "123456789",
 	}
 
-	database.ConnDB()
 	database.DB.Create(&MockedStudent)
 }
 
 func deleteMockedStudent() {
 	var student studentmodel.Student
 
-	database.ConnDB()
 	database.DB.Delete(&student, MockedStudent.ID)
+}
+
+func init() {
+	config.InitEnvironmentConfig()
+	database.ConnDB()
 }

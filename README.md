@@ -15,6 +15,8 @@ A implementação utiliza alguns packages úteis, tais como:
 ```git clone https://github.com/sirio-neto/gin-rest-api.git```
 - Acessar diretório projeto
 ```cd gin-rest-api```
+- Criar arquivo `.env` com base em arquivo de exemplo, para configuração de variáveis de ambiente:
+```cp .env_example .env```
 - Iniciar containers de serviços (`postgres` e `pgadmin4`) docker para criação e administração do banco de dados PostgreSQL:
 ```docker compose up -d```
 

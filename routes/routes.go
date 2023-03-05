@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	studentcontroller "github.com/sirio-neto/gin-rest-api/controllers/StudentController"
+	config "github.com/sirio-neto/gin-rest-api/environment"
 )
 
 func HandleRequests() {
@@ -17,5 +18,5 @@ func HandleRequests() {
 	r.PATCH("/students/:id", studentcontroller.Update)
 	r.POST("/students", studentcontroller.Insert)
 
-	r.Run(":8002")
+	r.Run(":" + config.Env.ApiPort)
 }
