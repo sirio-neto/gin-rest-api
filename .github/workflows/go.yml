@@ -1,0 +1,53 @@
+name: Test and Build App
+
+on:
+  push:
+      branches: [ "main" ]
+  pull_request:
+      branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-latest]
+        go_version: ["1.18", ">=1.19"]
+    env:
+      HOST: localhost
+      PORT: 5432
+      USER: root
+      PASSWORD: root
+      DBNAME: root
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go_version }}
+
+    - name: Build-DB
+      run: docker-compose build
+
+    - name: Create-DB
+      run: docker-compose up -d
+
+    - name: Test
+      run: go test -v main_test.go
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: go build -v main.go
+
+    - name: Upload a Build Artifact (main compilado)
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: go_app
+        path: main
