@@ -13,12 +13,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-latest]
         go_version: ["1.18", ">=1.19"]
-    env:
-      HOST: localhost
-      PORT: 5432
-      USER: root
-      PASSWORD: root
-      DBNAME: root
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -27,6 +21,9 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go_version }}
+
+    - name: Copy .env_example
+      run: cp .env_example .env
 
     - name: Build-DB
       run: docker-compose build
