@@ -53,3 +53,8 @@ cd gin-rest-api
 ```
 go test
 ```
+
+## Integração Contínua
+É possível executar workflow de teste e build da aplicação em diferentes versões do "Go" e sistemas operacionais. Para isso:
+- Acessar [workflows do repositório](https://github.com/sirio-neto/gin-rest-api/actions), e em seguida o workflow [Test and Build App](https://github.com/sirio-neto/gin-rest-api/actions/workflows/go.yml);
+- Em seguida executar manualmente o workflow através da opção `Run workflow`.
